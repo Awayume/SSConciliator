@@ -21,15 +21,19 @@ namespace ssconciliator {
 
   void Daemonize::init(void) {
     Daemonize::switch_process();
-    setsid();
+    if (setsid() < 0) {
+      std::exit(EXIT_FAILURE);
+    }
+    std::signal(SIGCHLD, SIG_IGN);
     std::signal(SIGHUP, SIG_IGN);
     Daemonize::switch_process();
+    umask(0022);
     chdir("/");
     for (int i = 0; i < MAXFD; i++) {
       close(i);
     }
     int fd = open("/dev/null", O_RDWR, 0);
-    if (fd == -1) {
+    if (fd < 0) {
       std::exit(EXIT_FAILURE);
     }
     else {
@@ -46,11 +50,11 @@ namespace ssconciliator {
   void Daemonize::switch_process(void) {
     pid_t pid = 0;
     pid = fork();
-    if (pid == -1) {
+    if (pid < 0) {
       std::cout << "process fork error" << std::endl;
       std::exit(EXIT_FAILURE); // TODO: throw exception
     }
-    else if (pid != 0) {
+    else if (pid > 0) {
       _exit(0);
     }
     return;
