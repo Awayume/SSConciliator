@@ -6,10 +6,12 @@
  */
 
 #include <iostream>
+#include <ssconciliator/daemonize.hpp>
 
 int main(int argc, char* argv[]) {
   using std::cout;
   using std::endl;
   cout << "SSConciliator" << endl;
+  ssconciliator::Daemonize::init();
   return 0;
 }
