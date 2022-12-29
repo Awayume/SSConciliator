@@ -7,11 +7,13 @@
 
 #include <iostream>
 #include <ssconciliator/daemonize.hpp>
+#include "argument.hpp"
 
 int main(int argc, char* argv[]) {
   using std::cout;
   using std::endl;
   cout << "SSConciliator" << endl;
+  ssconciliator::cmdline args = ssconciliator::ArgumentParser::parse(argc, argv);
   ssconciliator::Daemonize::init();
   return 0;
 }
